@@ -13,3 +13,17 @@ ggplot(data = siniestros, mapping = aes(y=Antigüedad_Maxima)) +
   scale_x_discrete("") +
   ylab("Antiguedad máxima") +
   theme_gray()
+
+#Nivel de ingresos
+media_ingresos <- floor(mean(siniestros[!is.na(siniestros$Nivel_Ingresos),]$Nivel_Ingresos))
+siniestros[is.na(siniestros$Nivel_Ingresos),]$Nivel_Ingresos <- media_ingresos
+
+etiqueta <- siniestros %>% group_by(Nivel_Ingresos) %>% summarise(n = n())
+siniestros <- left_join(siniestros, etiqueta, by = c("Nivel_Ingresos"))
+ggplot(data = siniestros, mapping = aes(x=as.factor(Nivel_Ingresos))) +
+  geom_bar(fill="darkblue") +
+  geom_text(mapping = aes(x=as.factor(Nivel_Ingresos), y = 2800, label = n)) +
+  scale_x_discrete("Nivel de ingresos") +
+  ylab("Conteo") +
+  theme_gray()
+
